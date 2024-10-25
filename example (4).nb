@@ -1,0 +1,316 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     13120,        308]
+NotebookOptionsPosition[     12096,        282]
+NotebookOutlinePosition[     12495,        298]
+CellTagsIndexPosition[     12452,        295]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Import SDPB Functions", "Subsection",
+ CellChangeTimes->{{3.927288178645255*^9, 
+  3.9272881868783607`*^9}},ExpressionUUID->"01f0c10f-a77d-4da0-8aa8-\
+7965e53b8902"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dir", "=", 
+   RowBox[{"NotebookDirectory", "[", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"SetDirectory", "[", "dir", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Import", "[", "\"\<SDPB.m\>\"", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"nodenum", ":=", "4"}]}], "Input",
+ CellChangeTimes->{{3.927286175567532*^9, 3.9272861781256742`*^9}, {
+  3.927287528045699*^9, 3.927287530325387*^9}, {3.927288410175239*^9, 
+  3.927288454676567*^9}, {3.927288498553261*^9, 3.927288522326392*^9}, {
+  3.927290657608684*^9, 3.9272906840632353`*^9}, {3.927292038038362*^9, 
+  3.927292039242977*^9}},
+ CellLabel->"In[19]:=",ExpressionUUID->"b859c282-0b59-44f7-a4d9-07852460eaf4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Example", "Subsection",
+ CellChangeTimes->{{3.9272881762190857`*^9, 
+  3.9272881769474907`*^9}},ExpressionUUID->"8a7fc89f-d5f5-40b8-9e56-\
+aa6e1c779211"],
+
+Cell["\<\
+The following is the example in the manual: 
+\tMaximize {a,b}.{0,-1} = -b 
+\tsubject to {a,b}.{1,0} = a = 1, 
+\t\t\t 1+x^4+b(x^4/12+x^2) >= 0 for all x>=0
+The prefactor DampedRational[1,{},1/E,x] doesn't affect the answer, but does \
+affect the choice of sample scalings and bilinear basis.\
+\>", "Text",
+ CellChangeTimes->{{3.927287533406616*^9, 3.927287539626844*^9}, {
+  3.9272876106498623`*^9, 3.927287654517511*^9}, {3.9272877746492434`*^9, 
+  3.927287784342835*^9}, {3.927288171437203*^9, 3.927288190167419*^9}, {
+  3.927293010279438*^9, 3.927293029747151*^9}, {3.9275973148352327`*^9, 
+  3.92759732644005*^9}, {3.9275975210656776`*^9, 
+  3.927597581590753*^9}},ExpressionUUID->"3b7dd718-74b7-4718-b067-\
+62f19d0144e0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Write", " ", ".", "json"}], " ", "file"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"testSDP", "[", "jsonFile_", "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"pols", "=", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"PositiveMatrixWithPrefactor", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"DampedRational", "[", 
+               RowBox[{"1", ",", 
+                RowBox[{"{", "}"}], ",", 
+                RowBox[{"1", "/", "E"}], ",", "x"}], "]"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{"{", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"1", "+", 
+                   RowBox[{"x", "^", "4"}]}], ",", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"x", "^", "4"}], "/", "12"}], "+", 
+                   RowBox[{"x", "^", "2"}]}]}], "}"}], "}"}], "}"}]}], 
+             "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"PositiveMatrixWithPrefactor", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"DampedRational", "[", 
+               RowBox[{"1", ",", 
+                RowBox[{"{", "}"}], ",", 
+                RowBox[{"1", "/", "E"}], ",", "x"}], "]"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{"{", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"2", "+", 
+                   RowBox[{"x", "^", "4"}]}], ",", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"x", "^", "4"}], "/", "12"}], "+", 
+                   RowBox[{"x", "^", "2"}]}]}], "}"}], "}"}], "}"}]}], 
+             "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "}"}]}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"norm", "=", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "0"}], "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"obj", "=", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", 
+            RowBox[{"-", "1"}]}], "}"}]}]}], "\[IndentingNewLine]", "}"}], 
+       ",", "\[IndentingNewLine]", 
+       RowBox[{"WritePmpJson", "[", 
+        RowBox[{"jsonFile", ",", 
+         RowBox[{"SDP", "[", 
+          RowBox[{"obj", ",", "norm", ",", "pols"}], "]"}]}], "]"}]}], 
+      "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"testSDP", "[", "\"\<sdpInput.json\>\"", "]"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"PMP", " ", "--"}], ">", " ", "SDP"}], " ", "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"RunProcess", "[", 
+     RowBox[{
+      RowBox[{"{", "\[IndentingNewLine]", 
+       RowBox[{"\"\<docker\>\"", ",", "\"\<run\>\"", ",", "\"\<-v\>\"", ",", 
+        RowBox[{"StringJoin", "[", 
+         RowBox[{
+          RowBox[{"ToString", "[", "dir", "]"}], ",", "\"\<:/data\>\""}], 
+         "]"}], ",", "\"\<bootstrapcollaboration/sdpb:master\>\"", ",", 
+        "\[IndentingNewLine]", "\"\<mpirun\>\"", ",", 
+        "\"\<--allow-run-as-root\>\"", ",", "\"\<-n\>\"", ",", 
+        RowBox[{"nodenum", "//", "ToString"}], ",", "\[IndentingNewLine]", 
+        "\"\<pmp2sdp\>\"", ",", "\"\<1024\>\"", ",", "\[IndentingNewLine]", 
+        "\"\<-i\>\"", ",", "\"\</data/sdpInput.json\>\"", ",", 
+        "\[IndentingNewLine]", "\"\<-o\>\"", ",", "\"\</data/test\>\""}], 
+       "\[IndentingNewLine]", "}"}], ",", 
+      RowBox[{"ProcessEnvironment", "\[Rule]", 
+       RowBox[{"<|", 
+        RowBox[{"\"\<PATH\>\"", "\[Rule]", 
+         RowBox[{"\"\</usr/local/bin:\>\"", "<>", 
+          RowBox[{"Environment", "[", "\"\<PATH\>\"", "]"}]}]}], "|>"}]}]}], 
+     "]"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Run", " ", "SDPB"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"RunProcess", "[", 
+     RowBox[{
+      RowBox[{"{", "\[IndentingNewLine]", 
+       RowBox[{
+       "\"\<docker\>\"", ",", "\"\<run\>\"", ",", "\"\<-v\>\"", ",", 
+        "\"\<./:/data/\>\"", ",", 
+        "\"\<bootstrapcollaboration/sdpb:master\>\"", ",", 
+        "\[IndentingNewLine]", "\"\<mpirun\>\"", ",", 
+        "\"\<--allow-run-as-root\>\"", ",", "\"\<-n\>\"", ",", "\"\<8\>\"", 
+        ",", "\[IndentingNewLine]", "\"\<sdpb\>\"", ",", 
+        "\"\<--precision\>\"", ",", "\"\<1024\>\"", ",", 
+        "\[IndentingNewLine]", "\"\<-s\>\"", ",", "\"\</data/test/\>\""}], 
+       "\[IndentingNewLine]", "}"}], ",", 
+      RowBox[{"ProcessEnvironment", "\[Rule]", 
+       RowBox[{"<|", 
+        RowBox[{"\"\<PATH\>\"", "\[Rule]", 
+         RowBox[{"\"\</usr/local/bin:\>\"", "<>", 
+          RowBox[{"Environment", "[", "\"\<PATH\>\"", "]"}]}]}], "|>"}]}]}], 
+     "]"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "sdpbOutput", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"sdpbOutput", "=", 
+       RowBox[{
+        RowBox[{"Import", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"ToString", "[", "dir", "]"}], "<>", 
+           "\"\<test/_out/out.txt\>\""}], ",", "\"\<Table\>\""}], "]"}], "[", 
+        
+        RowBox[{"[", 
+         RowBox[{
+          RowBox[{"1", ";;", "6"}], ",", "3"}], "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Join", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"StringReplace", "[", 
+          RowBox[{
+           RowBox[{"sdpbOutput", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", 
+           RowBox[{"\"\<;\>\"", "->", "\"\<\>\""}]}], "]"}], "}"}], ",", 
+        RowBox[{
+         RowBox[{"StringReplace", "[", 
+          RowBox[{
+           RowBox[{"sdpbOutput", "[", 
+            RowBox[{"[", 
+             RowBox[{"2", ";;", 
+              RowBox[{"-", "1"}]}], "]"}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"\"\<e\>\"", "\[Rule]", "\"\<*10^\>\""}], ",", 
+             RowBox[{"\"\<;\>\"", "->", "\"\<\>\""}]}], "}"}]}], "]"}], "//", 
+         "ToExpression"}]}], "]"}]}]}], "\[IndentingNewLine]", 
+    "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.927292009049574*^9, 3.9272921759943733`*^9}, 
+   3.927292233161381*^9, {3.9275387980788803`*^9, 3.927538857275051*^9}, {
+   3.927538914142004*^9, 3.927538965061359*^9}, {3.927597279227449*^9, 
+   3.927597305623735*^9}, {3.927597350848153*^9, 3.927597366833721*^9}, {
+   3.927597515711466*^9, 3.9275975161047373`*^9}, 3.927597592617633*^9},
+ CellLabel->"In[41]:=",ExpressionUUID->"89bde79e-c99e-4eb5-b1cf-2916bd4bdaf5"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"\\\"found primal-dual optimal solution\\\"\"\>", ",", 
+   "1.840265763132049246688040171731268351618336752692913388045460863874524282\
+659486017514077815421792273869259645451272026097356768485001925417166400465835\
+818942020604409518262172900064251524538289293295331904576154030045371995677837\
+794325377538871507690565333361726415861752944028967937065060689822676348516016\
+243`309.2648805464482", ",", 
+   "1.840265763132049246688040171729392923004373187206154051295188599959996691\
+416689887859712231243640841714852331835650505188104976783408251846591931626682\
+132713668359951078582595620421483601282781239293445985448870623616876032623595\
+120816522284349178240157120740543177054158122412365070701074942770059897525791\
+707`309.2648805464482", ",", 
+   "5.095537425995663407461458681441469597016002919420620724989544736252223989\
+964471864259050734583066698715057342630890247484146345060835802211432464309402\
+770704048123314825945548102756337457037160962573069219992994701121610937443990\
+136470091112949701373213420304431920619928491491931240942030420863640278974647\
+4230000000000000000000662782`309.70718999576843*^-31", ",", 
+   "1.211240847163190122186571556580500804137879814279830956757198863430373481\
+589676712936943967817167110322011515540904465265814553738447376781954622083670\
+548905039596832678474905286865658215289856834579557080202592922967786499509219\
+906634466630924993088396023061591523385723989902941059181649920878201308691334\
+95199999999999999999986496917501`309.0832305082908*^-86", ",", 
+   "3.070546297893475228629943894100784298520912572638506367867828002118919939\
+932336762324014402358289895602898827145336143291835230332089736113718575691511\
+617530189945361624324916003600013217079353188349961725654481590614202636731907\
+684722842895260559816077157247923939665038205044007769601827630577981086494444\
+73400000000000000000001706`309.48721565008753*^-304"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.927291966463282*^9, {3.9272921663311243`*^9, 3.9272921789303493`*^9}, 
+   3.9272922334300547`*^9, 3.927292285765801*^9, 3.9273274891530457`*^9, {
+   3.927538780734399*^9, 3.927538809812907*^9}, 3.927538863607772*^9, {
+   3.927538959503318*^9, 3.927538966054679*^9}, {3.927597344652029*^9, 
+   3.927597372122361*^9}, {3.927597586884573*^9, 3.92759759758251*^9}},
+ CellLabel->"Out[45]=",ExpressionUUID->"fff9fd42-d5f6-4aed-b1a4-ff1e3396682f"]
+}, Open  ]],
+
+Cell["\<\
+The output is a list of length 6, with the elements being : 
+  \t(1) Optimization status
+\t(2) Primal objective
+\t(3) Dual objective
+\t(4) Duality gap
+\t(5) Primal error
+\t(6) Dual error\
+\>", "Text",
+ CellChangeTimes->{{3.927597379449759*^9, 
+  3.927597503592067*^9}},ExpressionUUID->"08e83060-2655-4973-8688-\
+59791bb481e7"]
+}, Open  ]]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{12, Automatic}, {Automatic, 24}},
+FrontEndVersion->"13.2 for Mac OS X ARM (64-bit) (November 18, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"87b2adac-8bed-47f5-b01e-ad7a891e0d39"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 171, 3, 67, "Subsection",ExpressionUUID->"01f0c10f-a77d-4da0-8aa8-7965e53b8902"],
+Cell[754, 27, 792, 14, 142, "Input",ExpressionUUID->"b859c282-0b59-44f7-a4d9-07852460eaf4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1583, 46, 159, 3, 67, "Subsection",ExpressionUUID->"8a7fc89f-d5f5-40b8-9e56-aa6e1c779211"],
+Cell[1745, 51, 735, 14, 159, "Text",ExpressionUUID->"3b7dd718-74b7-4718-b067-62f19d0144e0"],
+Cell[CellGroupData[{
+Cell[2505, 69, 6799, 160, 974, "Input",ExpressionUUID->"89bde79e-c99e-4eb5-b1cf-2916bd4bdaf5"],
+Cell[9307, 231, 2422, 34, 458, "Output",ExpressionUUID->"fff9fd42-d5f6-4aed-b1a4-ff1e3396682f"]
+}, Open  ]],
+Cell[11744, 268, 336, 11, 217, "Text",ExpressionUUID->"08e83060-2655-4973-8688-59791bb481e7"]
+}, Open  ]]
+}
+]
+*)
+
